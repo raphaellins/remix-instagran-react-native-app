@@ -27,6 +27,32 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 const App: () => React$Node = () => {
+  function registerUser(email, password) {
+    console.log(email, password);
+    auth
+      .createUserWithEmailAndPassword(email, password)
+      .then(user => {
+        console.log(user);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+  auth.signOut().then(() => {
+    console.log('Logged out...');
+  });
+
+  f.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      console.log('logged in');
+    } else {
+      console.log('logged out');
+    }
+  });
+
+  // registerUser('raphalinns@gmail.com', '123456');
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
