@@ -14,6 +14,7 @@ import {
   View,
   Text,
   StatusBar,
+  TouchableHighlight,
 } from 'react-native';
 
 import {f, auth, database} from './config/config';
@@ -39,9 +40,9 @@ const App: () => React$Node = () => {
       });
   }
 
-  auth.signOut().then(() => {
-    console.log('Logged out...');
-  });
+  // auth.signOut().then(() => {
+  //   console.log('Logged out...');
+  // });
 
   f.auth().onAuthStateChanged(function(user) {
     if (user) {
@@ -91,6 +92,10 @@ const App: () => React$Node = () => {
               <Text style={styles.sectionDescription}>
                 Read the docs to discover what to do next:
               </Text>
+              <TouchableHighlight
+                onPress={() => registerUser(`raphalinns@gmail.com`, '123456')}>
+                <Text>Login</Text>
+              </TouchableHighlight>
             </View>
             <LearnMoreLinks />
           </View>
