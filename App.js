@@ -6,7 +6,7 @@
  * @flow
  */
 
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -15,6 +15,7 @@ import {
   Text,
   StatusBar,
   TouchableHighlight,
+  TextInput,
 } from 'react-native';
 
 import {f, auth, database} from './config/config';
@@ -28,6 +29,8 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 const App: () => React$Node = () => {
+  const [loggedIn, setLogin] = useState(false);
+
   function registerUser(email, password) {
     console.log(email, password);
     auth
@@ -40,17 +43,30 @@ const App: () => React$Node = () => {
       });
   }
 
-  // auth.signOut().then(() => {
-  //   console.log('Logged out...');
-  // });
+  let signUserOut = () => {
+    auth.signOut().then(() => {
+      console.log('Logged out...');
+    });
+  };
 
   f.auth().onAuthStateChanged(function(user) {
     if (user) {
-      console.log('logged in');
+      setLogin(true);
     } else {
-      console.log('logged out');
+      setLogin(false);
     }
   });
+
+  function* loginUser(email, pass) {
+    if (email != '' && pass != '') {
+      try {
+        let user = yield auth.signInWithEmailAndPassword(email, pass);
+        console.log(user);
+      } catch (err) {}
+    } else {
+      alert('Provide your profiles values');
+    }
+  }
 
   // registerUser('raphalinns@gmail.com', '123456');
 
@@ -69,33 +85,25 @@ const App: () => React$Node = () => {
           )}
           <View style={styles.body}>
             <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
               <Text style={styles.sectionTitle}>Learn More</Text>
               <Text style={styles.sectionDescription}>
                 Read the docs to discover what to do next:
               </Text>
-              <TouchableHighlight
-                onPress={() => registerUser(`raphalinns@gmail.com`, '123456')}>
-                <Text>Login</Text>
-              </TouchableHighlight>
+              {this.loggedIn == true ? (
+                <View>
+                  <Text>Logged in...</Text>
+                </View>
+              ) : (
+                <View>
+                  <TouchableHighlight
+                    style={{color: 'blue'}}
+                    onPress={() =>
+                      registerUser(`raphalinns@gmail.com`, '123456')
+                    }>
+                    <Text>Login</Text>
+                  </TouchableHighlight>
+                </View>
+              )}
             </View>
             <LearnMoreLinks />
           </View>
